@@ -1,0 +1,34 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "server for my map app",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mr-teddy-bear/world-map.git"
+  },
+  "keywords": [
+    "App",
+    "with",
+    "Google",
+    "Map",
+    "Api"
+  ],
+  "author": "Maksim Sokolovskiy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mr-teddy-bear/world-map/issues"
+  },
+  "homepage": "https://github.com/mr-teddy-bear/world-map#readme",
+  "devDependencies": {
+    "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
