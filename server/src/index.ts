@@ -1,10 +1,11 @@
-import express from "express";
+import app from "./app";
+import config from "./config/environment";
+import logger from "./config/winston";
 
-const app = express();
-const port = 5000;
+const {
+  app: { port },
+} = config;
 
-app.get("/", (request, response) => {
-  response.send("Hello world!");
+app.listen(process.env.PORT || port, () => {
+  logger.info(`Server running on port ${port}`);
 });
-
-app.listen(port, () => console.log(`Running in port ${port}`));
