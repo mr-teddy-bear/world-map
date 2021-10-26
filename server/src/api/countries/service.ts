@@ -4,7 +4,7 @@ import { AddCountriesReqType, GetCountriesDTO } from "./controller";
 
 const getCountries = async (res: GetCountriesDTO) => {
   const countries = await Countries.findAll({
-    limit: Number(res.limit),
+    limit: res.limit && +res.limit,
     raw: true,
     nest: true,
     offset: res.limit && res.page ? Number(+res?.limit * (+res.page - 1)) : 0,
@@ -25,7 +25,7 @@ const addCountry = async (req: AddCountriesReqType) => {
     throw new Error("Country is already exist");
   }
 
-  const country = Countries.build({
+  const country = await Countries.create({
     name: req.name,
     lat: req.lat,
     lng: req.lng,
@@ -36,7 +36,8 @@ const addCountry = async (req: AddCountriesReqType) => {
     year: req.year,
     img: req.img,
   });
-  //await country.save();
+
+  await country.save();
 
   return country;
 };
@@ -59,7 +60,7 @@ const changeCountry = async ({
   );
 };
 
-const deleteCountry = async (id) => {
+const deleteCountry = async (id: number) => {
   await Countries.destroy({ where: { id } });
 };
 

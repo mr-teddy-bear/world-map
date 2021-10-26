@@ -39,8 +39,8 @@ const getCountriesController = async (req: Request, res: Response) => {
 const addCountriesController = async (req: Request, res: Response) => {
   try {
     const reqs: AddCountriesReqType = req.body;
-    const allContacts = await addCountry(reqs);
-    res.status(200);
+    await addCountry(reqs);
+    res.json({ message: "Succesfull" });
   } catch (e) {
     res.status(500).json({ message: e.message || "Что-то пошло не так..." });
   }
@@ -50,7 +50,7 @@ const changeCountriesController = async (req, res) => {
   try {
     const reqs: CountriesTypes = req.body;
     await changeCountry(reqs);
-    res.status(200);
+    res.json({ message: "Succesfull" });
   } catch (e) {
     res.status(500).json({ message: e.message || "Что-то пошло не так..." });
   }
@@ -60,7 +60,7 @@ const deleteCountriesController = async (req, res) => {
   try {
     const { id } = req.body;
     await deleteCountry(id);
-    res.status(200);
+    res.json({ message: "Succesfull" });
   } catch (e) {
     res.status(500).json({ message: e.message || "Что-то пошло не так..." });
   }

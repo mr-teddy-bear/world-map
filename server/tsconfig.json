@@ -11,9 +11,9 @@
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "sourceMap": true
     // "strictPropertyInitialization": false,
-    // "sourceMap": true
   },
   "exclude": ["node_modules"]
 }
