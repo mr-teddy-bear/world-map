@@ -5,21 +5,27 @@ import { MarkerType } from "../pages/Map/Map";
 
 function useGetCountries(
   page?: string,
-  count?: string,
+  count?: number,
+  search?: string,
   filterFiled?: string,
-  filterType?: string,
-  search?: string
+  filterType?: string
 ) {
   const {
     data: countries,
     error,
     isLoading,
   } = useQuery(
-    ["getCountries", { page, count, filterFiled, filterType, search }],
+    ["getCountries", { page, count, search, filterFiled, filterType }],
     () =>
-      axios.get<MarkerType[]>(`${apiRoute}/countries`, {
-        data: { page, count, filterFiled, filterType, search },
-      })
+      axios.get<{ countries: MarkerType[]; countriesLength: number }>(
+        `${apiRoute}/countries?${page ? `page=${page}` : ``}&&${
+          count ? `count=${count}` : ``
+        }&&${search ? `search=${search}` : ``}
+        `,
+        {
+          data: { page, count, search, filterFiled, filterType },
+        }
+      )
   );
 
   return { countries, error, isLoading };

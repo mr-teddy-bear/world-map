@@ -9,7 +9,7 @@ const schema = yup.object().shape({
   area: yup.number().required("Required field"),
   population: yup.number().required("Required field"),
   year: yup.number().required("Required field"),
-  imgLink: yup.string().required("Required field"),
+  img: yup.string().required("Required field"),
 
   createdOn: yup.date().default(function () {
     return new Date();

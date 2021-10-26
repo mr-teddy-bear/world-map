@@ -15,7 +15,14 @@ export const AboutCountry = ({ country }: AboutCountryPropsType) => {
           {country.name}, {country.capital}
         </h2>
         <h3>{country.code}</h3>
-        <img src={`${apiRoute}/${country.img}`} alt="" />
+        <img
+          src={` ${
+            country.img.includes("http")
+              ? country.img
+              : apiRoute + "/" + country.img
+          }`}
+          alt=""
+        />
       </AboutCountryTitleWrapper>
 
       <AboutCountryRowWrapper>

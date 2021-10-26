@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
 import { useSortBy, useTable } from "react-table";
 import styled from "styled-components";
@@ -10,6 +10,10 @@ import { Modal } from "../../components/Modal";
 import { Formik } from "formik";
 import validationSchema from "./validationSchema";
 import { CircProgress } from "../../components/CircProgress";
+import { useAddCountry } from "../../hooks/useAddCountry";
+import { DeleteModal } from "../../components/DeleteModal";
+import { useDeleteCountry } from "../../hooks/useDeleteCountry";
+import { queryClient } from "../../config";
 
 enum Headers {
   NAME = "Name",
@@ -31,13 +35,31 @@ type AdminPropsType = {
 };
 
 export const Admin = (props: AdminPropsType) => {
-  const { countries, isLoading } = useGetCountries();
+  const [isAddCountryOpen, setIsCountryOpen] = useState<boolean>(false);
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<{
+    name: string;
+    id: number;
+  } | null>(null);
+  const { mutate: addCountry, isLoading: addCountryLoader } = useAddCountry();
+  const { mutate: deleteCountry, isLoading: deleteCountryLoader } =
+    useDeleteCountry(setIsDeleteModalOpen);
   const params = useParams<{ pageId: string }>();
+  const { countries, isLoading } = useGetCountries(
+    params.pageId,
+    limitOfTableRows,
+    searchValue
+  );
   const history = useHistory();
   const countOfPages = Math.ceil(
-    Number(countries?.data.length) / limitOfTableRows
+    Number(countries?.data.countriesLength) / limitOfTableRows
   );
-  const [isAddCountryOpen, setIsCountryOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    searchValue &&
+      searchValue.length > 3 &&
+      queryClient.invalidateQueries("getCountries");
+  }, [searchValue]);
 
   const columns = React.useMemo(
     () => [
@@ -95,23 +117,45 @@ export const Admin = (props: AdminPropsType) => {
         Header: Headers.ACTION,
         accessor: (originalRow: MarkerType) => (
           <ActionBtnWrapper>
-            <button>DELETE</button>
+            <button
+              onClick={() =>
+                setIsDeleteModalOpen({
+                  id: originalRow.id,
+                  name: originalRow.name,
+                })
+              }
+            >
+              DELETE
+            </button>
             <button>CHANGE</button>
           </ActionBtnWrapper>
         ),
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [countries?.data]
+    [countries?.data.countries]
   );
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({
-      data: countries?.data || [],
+      data: countries?.data.countries || [],
       columns,
     });
   return (
     <>
+      {isDeleteModalOpen && (
+        <Modal
+          visible={!!isDeleteModalOpen.name}
+          onClose={() => setIsDeleteModalOpen(null)}
+        >
+          <DeleteModal
+            name={isDeleteModalOpen.name}
+            delete={() => deleteCountry({ id: isDeleteModalOpen.id })}
+            close={() => setIsDeleteModalOpen(null)}
+            loading={deleteCountryLoader}
+          />
+        </Modal>
+      )}
       {isAddCountryOpen && (
         <Modal
           visible={isAddCountryOpen}
@@ -124,16 +168,18 @@ export const Admin = (props: AdminPropsType) => {
                 name: "",
                 code: "",
                 capital: "",
-                lat: "",
-                lng: "",
-                area: "",
-                population: "",
-                year: "",
-                imgLink: "",
+                lat: 0,
+                lng: 0,
+                area: 0,
+                population: 0,
+                year: 0,
+                img: "",
               }}
               validationSchema={validationSchema}
               onSubmit={(values, { resetForm }) => {
                 console.log("countries", values);
+                addCountry(values);
+                setIsCountryOpen(false);
               }}
             >
               {({
@@ -249,18 +295,22 @@ export const Admin = (props: AdminPropsType) => {
 
                   <InputWrapper req={true}>
                     <StyledInput
-                      value={values.imgLink}
+                      value={values.img}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      name="imgLink"
+                      name="img"
                       placeholder=""
                       type="text"
-                      error={errors.imgLink && touched.imgLink ? 1 : 0}
+                      error={errors.img && touched.img ? 1 : 0}
                     />
                     <label htmlFor="">Img Link</label>
                   </InputWrapper>
 
-                  {isLoading ? <CircProgress /> : <SubmitBtn>Submit</SubmitBtn>}
+                  {addCountryLoader ? (
+                    <CircProgress />
+                  ) : (
+                    <SubmitBtn>Submit</SubmitBtn>
+                  )}
                 </form>
               )}
             </Formik>
@@ -271,7 +321,12 @@ export const Admin = (props: AdminPropsType) => {
         <SearchWrapper>
           <SearchBar>
             <SearchIconStyled />
-            <SearchInput type="search" placeholder="Search" />
+            <SearchInput
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.currentTarget.value)}
+              type="search"
+              placeholder="Search... "
+            />
             <SearchBtn>Search</SearchBtn>
           </SearchBar>
           <AddNewBtn onClick={() => setIsCountryOpen(true)}>
@@ -328,7 +383,7 @@ export const Admin = (props: AdminPropsType) => {
         </TableWrapper>
         <TablePagination>
           <PaginationText>
-            Page {params.pageId} of {countOfPages}
+            Page {params.pageId} of {isNaN(countOfPages) ? 1 : countOfPages}
           </PaginationText>
           <PaginationBtns>
             <PaginationBtn

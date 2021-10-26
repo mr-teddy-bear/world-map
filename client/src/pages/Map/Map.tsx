@@ -18,6 +18,7 @@ export type MarkerType = {
   year: number | null;
   description: string;
   img: string;
+  id: number;
 };
 
 const data = [
@@ -90,7 +91,7 @@ export const Map = () => {
     <MapWrapper>
       <GoogleMap
         center={center}
-        markers={countries?.data}
+        markers={countries?.data.countries}
         isLoaded={isLoaded}
         loadError={loadError}
         selected={selected}
@@ -98,7 +99,11 @@ export const Map = () => {
         onMapLoad={onMapLoad}
         isLoadingData={isLoading}
       />
-      <RightPannel panTo={panTo} isLoading={isLoading} data={countries?.data} />
+      <RightPannel
+        panTo={panTo}
+        isLoading={isLoading}
+        data={countries?.data.countries}
+      />
     </MapWrapper>
   );
 };

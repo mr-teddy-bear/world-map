@@ -41,7 +41,11 @@ export const GoogleMap = (props: MapMarkeredPropsType) => {
               props.setSelected(marker);
             }}
             icon={{
-              url: `${apiRoute}/${marker.img}`,
+              url: `${
+                marker.img.includes("http")
+                  ? marker.img
+                  : apiRoute + "/" + marker.img
+              }`,
               origin: new window.google.maps.Point(0, 0),
               anchor: new window.google.maps.Point(14, 7),
               scaledSize: new window.google.maps.Size(24, 12),
