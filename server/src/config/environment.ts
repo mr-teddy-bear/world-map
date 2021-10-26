@@ -13,9 +13,9 @@ export default {
     clientUri: process.env.CLIENT_URI,
   },
   db: {
-    dbName: process.env.DB_NAME,
-    dbUser: process.env.DB_USER,
-    dbHost: process.env.DB_HOST,
-    dbPassword: process.env.DB_PASSWORD,
+    dbName: process.env.DB_NAME || "newTable",
+    dbUser: process.env.DB_USER || "root",
+    dbHost: process.env.DB_HOST || "localhost",
+    dbPassword: process.env.DB_PASSWORD || "123456Qwerty",
   },
 };

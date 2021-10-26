@@ -1,8 +1,8 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
-import { sequelize } from "../app";
+import { sequelize } from "../config/mysql";
 
-interface CountriesTypes {
-  id: number;
+export interface CountriesTypes {
+  id?: number;
   lat: number;
   lng: number;
   name: string;
@@ -11,7 +11,7 @@ interface CountriesTypes {
   population: number;
   code: string;
   year: number;
-  description: string;
+  description?: string;
   img: string;
 }
 
@@ -43,7 +43,7 @@ Countries.init(
     name: { type: DataTypes.STRING, unique: true },
     capital: { type: DataTypes.STRING },
     area: { type: DataTypes.DOUBLE },
-    population: { type: DataTypes.NUMBER },
+    population: { type: DataTypes.DOUBLE },
     code: { type: DataTypes.STRING },
     year: { type: DataTypes.INTEGER },
     description: { type: DataTypes.TEXT },
