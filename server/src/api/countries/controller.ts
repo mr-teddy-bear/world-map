@@ -9,8 +9,9 @@ import {
 
 export type GetCountriesDTO = {
   page?: string;
-  limit?: string;
-  filter?: {};
+  count?: string;
+  filterFiled?: string;
+  filterType?: string;
   search?: string;
 };
 
@@ -28,8 +29,16 @@ export type AddCountriesReqType = {
 
 const getCountriesController = async (req: Request, res: Response) => {
   try {
-    const { page, limit, filter, search }: GetCountriesDTO = req.query;
-    const countries = await getCountries({ page, limit, filter, search });
+    const { page, count, filterFiled, filterType, search }: GetCountriesDTO =
+      req.query;
+    console.log("REQ QUERY", req.query);
+    const countries = await getCountries({
+      page,
+      count,
+      filterFiled,
+      filterType,
+      search,
+    });
     res.json(countries);
   } catch (e: any) {
     res.status(500).json({ message: e.message });

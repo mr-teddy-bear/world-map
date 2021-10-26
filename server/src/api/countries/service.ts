@@ -3,16 +3,17 @@ import Countries, { CountriesTypes } from "../../models/Countries";
 import { AddCountriesReqType, GetCountriesDTO } from "./controller";
 
 const getCountries = async (res: GetCountriesDTO) => {
+  const countriesLength = await Countries.count();
   const countries = await Countries.findAll({
-    limit: res.limit && +res.limit,
+    limit: res.count && +res.count,
     raw: true,
     nest: true,
-    offset: res.limit && res.page ? Number(+res?.limit * (+res.page - 1)) : 0,
+    offset: res.count && res.page ? Number(+res?.count * (+res.page - 1)) : 0,
     // order: filter?.field ? [[filter.field, filter.row]] : null,
-    // where: search ? { name: { [Op.like]: `%${search}%` } } : null,
+    where: res.search ? { name: { [Op.like]: `%${res.search}%` } } : null,
   });
 
-  return countries;
+  return { countries, countriesLength };
 };
 
 const addCountry = async (req: AddCountriesReqType) => {
