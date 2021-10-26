@@ -1,10 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { MarkerType } from "../../pages/Map/Map";
+import { CircProgress } from "../CircProgress";
 
 type RightPannelPropsType = {
-  data: MarkerType[] | null;
+  data?: MarkerType[];
   panTo: ({ lat, lng }: any) => void;
+  isLoading: boolean;
 };
 
 export const RightPannel = (props: RightPannelPropsType) => {
@@ -19,6 +21,7 @@ export const RightPannel = (props: RightPannelPropsType) => {
       <PanelTitle>Available Countries</PanelTitle>
 
       <CountriesWrapper>
+        {props.isLoading && <CircProgress />}
         {props.data?.map((country) => (
           <CountryBlock
             onClick={() => handleCardClick(country.lat, country.lng)}

@@ -5,6 +5,7 @@ import { GoogleMap } from "../../components/GoogleMap";
 import { RightPannel } from "../../components/RightPannel";
 import canada from "../../assets/canada.png";
 import belarus from "../../assets/belarus.jpg";
+import { useGetCountries } from "../../hooks/useGetCountries";
 
 export type MarkerType = {
   lat: number;
@@ -47,6 +48,8 @@ const data = [
 ];
 
 export const Map = () => {
+  const { countries, isLoading } = useGetCountries();
+
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey:
       process.env.REACT_APP_GOOGLE_MAPS_API_KEY ||
@@ -87,14 +90,15 @@ export const Map = () => {
     <MapWrapper>
       <GoogleMap
         center={center}
-        markers={data}
+        markers={countries?.data}
         isLoaded={isLoaded}
         loadError={loadError}
         selected={selected}
         setSelected={setSelected}
         onMapLoad={onMapLoad}
+        isLoadingData={isLoading}
       />
-      <RightPannel panTo={panTo} data={data} />
+      <RightPannel panTo={panTo} isLoading={isLoading} data={countries?.data} />
     </MapWrapper>
   );
 };

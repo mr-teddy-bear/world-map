@@ -1,6 +1,7 @@
 import { GoogleMap as GoogleMapApi, Marker } from "@react-google-maps/api";
 import React from "react";
 import styled from "styled-components";
+import { apiRoute } from "../../config";
 import { MarkerType } from "../../pages/Map/Map";
 import { AboutCountry } from "../AboutCountry";
 import { Modal } from "../Modal";
@@ -11,9 +12,10 @@ type MapMarkeredPropsType = {
     lng: number;
   };
 
-  markers: MarkerType[] | null;
+  markers?: MarkerType[];
   loadError: Error | undefined;
   isLoaded: any;
+  isLoadingData: boolean;
   selected: any;
   setSelected: React.Dispatch<React.SetStateAction<MarkerType | null>>;
   onMapLoad: (map: any) => void;
@@ -21,7 +23,7 @@ type MapMarkeredPropsType = {
 
 export const GoogleMap = (props: MapMarkeredPropsType) => {
   if (props.loadError) return <div>Error</div>;
-  if (!props.isLoaded) return <div>Loading...</div>;
+  if (!props.isLoaded || props.isLoadingData) return <div>Loading...</div>;
   return (
     <GoogleMapWrapper>
       <GoogleMapApi
@@ -39,7 +41,7 @@ export const GoogleMap = (props: MapMarkeredPropsType) => {
               props.setSelected(marker);
             }}
             icon={{
-              url: marker.img,
+              url: `${apiRoute}/${marker.img}`,
               origin: new window.google.maps.Point(0, 0),
               anchor: new window.google.maps.Point(14, 7),
               scaledSize: new window.google.maps.Size(24, 12),

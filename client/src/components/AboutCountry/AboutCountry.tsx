@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { apiRoute } from "../../config";
 import { MarkerType } from "../../pages/Map/Map";
 
 type AboutCountryPropsType = {
@@ -14,7 +15,7 @@ export const AboutCountry = ({ country }: AboutCountryPropsType) => {
           {country.name}, {country.capital}
         </h2>
         <h3>{country.code}</h3>
-        <img src={country.img} alt="" />
+        <img src={`${apiRoute}/${country.img}`} alt="" />
       </AboutCountryTitleWrapper>
 
       <AboutCountryRowWrapper>
